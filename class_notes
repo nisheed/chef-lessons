@@ -1,0 +1,50 @@
+role level takes precedence over the node level ones.
+
+openssl rand -base64 512 | tr -d '\r\n' > secret_key
+openssl passwd -1 "bobspwd"
+openssl passwd -1 "franksspwd"
+
+[linux@server1 chef-repo]$ knife data_bag show passwords userlist
+bob:
+  cipher:         aes-256-cbc
+  encrypted_data: yHMIoOu5OUcJGe3cvxOR3pVdjc87HyEaUmy+v/DzLoB7/e1RjxF4Q+YfbsTM
+  3n85ZYnMXPmWlmrEGIkIL6bmug==
+  
+  iv:             +eiBFWD7fKIMeCPOqN1khQ==
+  
+  version:        1
+franko:
+  cipher:         aes-256-cbc
+  encrypted_data: 2H5jhJ4rEsCeHABdlUjhgKCvKDlUOuPpEzDqoLHOFJZwvAbJOAf3TVidh5wX
+  mcDWVhU/KhyFz/9LKkyhq9P8qA==
+  
+  iv:             9WzMOvZNOnsBwzkXhpkM2w==
+  
+  version:        1
+id:     userlist
+[linux@server1 chef-repo]$ knife data_bag show passwords userlist --secret-file secret_key 
+bob:    $1$kslLcRfB$FELAu5O/rdmjTLx5g3TpQ0
+franko: $1$3ricvtKt$q0qebcc7u.fUyPqDoipiZ/
+id:     userlist
+[linux@server1 chef-repo]$ 
+
+[linux@server1 chef-repo]$ knife data_bag show passwords userlist --secret-file secret_key 
+bob:    $1$kslLcRfB$FELAu5O/rdmjTLx5g3TpQ0
+franko: $1$3ricvtKt$q0qebcc7u.fUyPqDoipiZ/
+id:     userlist
+[linux@server1 chef-repo]$ vi cookbooks/users/recipes/default.rb 
+[linux@server1 chef-repo]$ knife cookbook upload users
+Uploading users          [0.1.0]
+Uploaded 1 cookbook.
+[linux@server1 chef-repo]$ 
+
+  414  knife environment list
+  415  vi ./environments/dev.rb
+  416  knife environment from file dev.rb
+
+  423  cp environments/dev.rb environments/production.rb
+  424  vi environments/production.rb
+  425  knife environment from file production.rb
+  426  knife node edit testnode
+
+
